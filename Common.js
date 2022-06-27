@@ -8,52 +8,52 @@ function onHomepage(e) {
   function logging(item_id){
    //call treeStructure function
     let treeStructure_result = treeStructure(item_id);
-    //Logger.log('treeStructure: ' + treeStructure_result);
-   
-   let allCards = []; //empty list where all cards will be pushed
-   //iterate through the returned data from the treeStructure function, for each element build a new card
+    let allCards = []; //empty list where all cards will be pushed
+   // for each element build a new card
    treeStructure_result.forEach((data_set) => construirCard(data_set));
   
    function construirCard(data_set){
-      //get the name of the folder folder container from the returned data_set (folders that includes other folders)
-      console.log("CARPETA PADRE", typeof(data_set))
+      //console.log("CARPETA PADRE", typeof(data_set))
       if (data_set.length < 1){
         //hoist folder_name
         Logger.log("EMPY DATA SET:", data_set, item_id)
         let folder_name = "QUEMASVE";
 
-        let cardSection = CardService.newCardSection();
-        cardSection.addWidget(CardService.newDecoratedText()
+        let cardSection1 = CardService.newCardSection();
+        cardSection1.addWidget(CardService.newDecoratedText()
                         .setText("No sub folders found").setWrapText(true));
 
-        let card = CardService.newCardBuilder()
-        .setHeader(CardService.newCardHeader().setTitle(`${folder_name}`))
-        .addSection(cardSection).build();
+        let card = CardService.newCardBuilder().setHeader(CardService.newCardHeader().setTitle(`${folder_name}`))
+        .addSection(cardSection1).build();
         allCards.push(card);
       }
       else {
         let folder_name = data_set[0].parentFolderName;
-
-        let cardSection = CardService.newCardSection();
+        var cardSection2 = CardService.newCardSection();
+       // let fileNames = child_folder.childFiles;    //JSON.stringify(child_folder.childFiles)
         // for each folder get the links, names and files 
         data_set.forEach((child_folder)=>{
-          cardSection.addWidget(CardService.newDecoratedText()
-                        .setText("<a href="+`${child_folder.subFolderLink}`+">"+`${child_folder.subFolderName}`+"</a>"+
-                        "<br>"+"<b>"+`${JSON.stringify(child_folder.childFiles)}`+"</b>").setWrapText(true));
-  
-        });
-        var card = CardService.newCardBuilder()
+
+       
+          cardSection2.addWidget(CardService.newDecoratedText()
+                        .setText("<a href="+`${child_folder.subFolderLink}`+">"+`${child_folder.subFolderName}`+"</a>"));
+                        // CONDITIONAL HERE?????????
+          child_folder.childFiles.forEach(file=>{
+            cardSection2.addWidget(CardService.newTextParagraph().setText(`${file.fileName}`));
+          });
+
+        });    
+        let card = CardService.newCardBuilder()
         .setHeader(CardService.newCardHeader().setTitle(`${folder_name}`))
-        .addSection(cardSection).build();
-        allCards.push(card);
-        
+        .addSection(cardSection2).build();
+        allCards.push(card); 
       }
         /* // in case for wrapping text
           let cardSection = CardService.newCardSection().setHeader('YANtree')
                           .addWidget(CardService.newDecoratedText()
-                          .setText("<b>"+`${element.length}`+"</b>"+"<br>"+"QUEMASVE").setWrapText(true));
-      
-                          */
+                          .setText("<b>"+`${element.length}`+"</b>"+"<br>"+"QUEMASVE")
+                          .setWrapText(true));
+        */
     }
      return allCards;
   }
@@ -81,17 +81,13 @@ function getChildFolders(folder) {
   while (folders.hasNext()) {
     let oneFolder = folders.next();     
     let docList = [];
-    //Logger.log('docList: ' + docList);
-    //Logger.log('Folder Name: ' + oneFolder.getName());
-    // get all files from oneFolder
     let files = oneFolder.getFiles();
-
     while (files.hasNext()) {
       let oneFile = files.next();
       //Logger.log('File Name: ' +  oneFile.getName());
       docList.push({fileName:oneFile.getName()});
     }
-    Logger.log('docList_2ndWhile: ' + docList);
+    //Logger.log('docList_2ndWhile: ' + docList);
     temp.push({
       parentFolderName:folder.getName(),
       parentDirId: folder.getId(), 
@@ -100,10 +96,9 @@ function getChildFolders(folder) {
       subFolderId: oneFolder.getId(),
       childFiles: docList
       });
-
   }
-       // Time-Execution too long for recursive call for nested sub-folders
-      //  getChildFolders(subFolder);  
+    // Time-Execution too long for recursive call for nested sub-folders
+    //  getChildFolders(subFolder);  
   return temp;
 }
   
@@ -116,7 +111,7 @@ function getChildFolders(folder) {
     // Create a footer to be shown at the bottom
     var footerSection = CardService.newFixedFooter()
       .setPrimaryButton(CardService.newTextButton()
-      .setText('Powered by margottig')
+      .setText('ツmargottig 2022')
       .setOpenLink(CardService.newOpenLink()
       .setUrl('https://euracoustics.org/yan/')));
 
