@@ -17,7 +17,7 @@ function onHomepage(e) {
       if (data_set.length < 1){
         //hoist folder_name
         Logger.log("EMPY DATA SET:", data_set, item_id)
-        let folder_name = "QUEMASVE";
+        let folder_name = "((d[-_-]b))";
 
         let cardSection1 = CardService.newCardSection();
         cardSection1.addWidget(CardService.newDecoratedText()
@@ -111,7 +111,8 @@ function getChildFolders(folder) {
     // Create a footer to be shown at the bottom
     var footerSection = CardService.newFixedFooter()
       .setPrimaryButton(CardService.newTextButton()
-      .setText('ツmargottig 2022')
+      .setText('ツ margottig')
+      .setDisabled(true)
       .setOpenLink(CardService.newOpenLink()
       .setUrl('https://euracoustics.org/yan/')));
 

@@ -11,7 +11,7 @@
     "runtimeVersion": "V8",
     "addOns": {
       "common": {
-        "name": "Drivecontext2.0",
+        "name": "DriveYAN context",
         "logoUrl": "https://euracoustics.org/media/images/logo_YAN-deno_2.original.png",
         "useLocaleFromApp": true,
         "homepageTrigger": {
