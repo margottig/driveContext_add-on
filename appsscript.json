@@ -5,14 +5,24 @@
     "oauthScopes": [
       "https://www.googleapis.com/auth/drive.addons.metadata.readonly",
       "https://www.googleapis.com/auth/script.locale",
+      "https://www.googleapis.com/auth/script.external_request",
       "https://www.googleapis.com/auth/drive.readonly",
       "https://www.googleapis.com/auth/drive.file",
-      "https://www.googleapis.com/auth/drive"],
+      "https://www.googleapis.com/auth/drive",
+      "https://www.googleapis.com/auth/documents.currentonly",
+      "https://www.googleapis.com/auth/spreadsheets"],
+      
     "runtimeVersion": "V8",
+    "urlFetchWhitelist": [
+      "https://api.qrserver.com/"
+    ],
     "addOns": {
       "common": {
         "name": "DriveYAN context",
         "logoUrl": "https://euracoustics.org/media/images/logo_YAN-deno_2.original.png",
+        "layoutProperties": {
+          "primaryColor": "#004357"
+        },
         "useLocaleFromApp": true,
         "homepageTrigger": {
           "runFunction": "onHomepage",
@@ -21,12 +31,26 @@
         "universalActions":[{
           "label": "More actions",
           "openLink":"https://euracoustics.org/yan/"
-        }]
+        },{
+          "label": "Github",
+          "openLink":"https://github.com/margottig/"
+        }
+      ]
       },
       "drive": {
         "onItemsSelectedTrigger": {
           "runFunction": "onDriveYanTree"
         } 
+      },
+      "docs": {
+        "homepageTrigger": {
+          "runFunction": "onDocsWorkSpace"
+        }
+      },
+      "sheets": {
+        "homepageTrigger": {
+          "runFunction": "onSheetsWorkSpace"
+        }
       }
       
     }   

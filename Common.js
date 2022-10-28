@@ -108,7 +108,8 @@ function getChildFolders(folder) {
     if (!isHomePage){
       isHomePage = false;
     }
-    // Create a footer to be shown at the bottom
+
+    // +_+_+_+_+_+_+_+_+_+_+_+_ Footer bottom +_+_+_+_+_+_+_+_+_+_+_+_//
     var footerSection = CardService.newFixedFooter()
       .setPrimaryButton(CardService.newTextButton()
       .setText('ツ margottig')
