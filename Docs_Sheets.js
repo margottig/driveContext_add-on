@@ -2,10 +2,9 @@ const DATA_MAX_LENGTH = 500;
 const IMAGE_MAX_WIDTH = 1000;
 const IMAGE_MIN_WIDTH = 10;
 
-
 function onSheetsWorkSpace(e) {
     //console.log(e);
-    console.log(SpreadsheetApp.getActiveSheet().getActiveCell().getValue(), "SPREADSHEETS")
+    //console.log(SpreadsheetApp.getActiveSheet().getActiveCell().getValue(), "SPREADSHEETS")
     const builder = CardService.newCardBuilder();
     /* WATCH HERE!!!!!!!!!!!!!!!!!!!!!! */
     
@@ -43,6 +42,11 @@ function qrGeneratorForm(e){
       .setValue('200')
       .setHint(`Required. Number between ${IMAGE_MIN_WIDTH} and ${IMAGE_MAX_WIDTH}, inclusive.`);
 
+    const nameInput = CardService.newTextInput()
+      .setTitle('Name of the QR file')
+      .setFieldName('QRname')
+      .setHint("Name under which the QR file will be saved")
+
   const submitAction = CardService.newAction()
       .setFunctionName('onGenerateImage')
       .setLoadIndicator(CardService.LoadIndicator.SPINNER);
@@ -56,6 +60,7 @@ function qrGeneratorForm(e){
   const optionsSection = CardService.newCardSection()
       .addWidget(dataInput)
       .addWidget(widthInput)
+      .addWidget(nameInput)
       .addWidget(submitButton);
 
   builder.addSection(optionsSection);
@@ -63,31 +68,34 @@ function qrGeneratorForm(e){
   
 }
 
-
 function onGenerateImage(e) {
     const data = e.formInput.data;
     let width = e.formInput.width;
+    let qr_file_name = e.formInput.QRname;
 
     //INPUT VALIDATORS SECTION
     if (!data || data.length == 0) {
-      return notify('Please specify the data to encode.');
+      return notification_message('Please specify the data to encode.');
     }
     if (data.length > DATA_MAX_LENGTH) {
-      return notify('Data is too long. Please limit to 500 characters.');
+      return notification_message('Data is too long. Please limit to 500 characters.');
+    }
+    if (!qr_file_name || qr_file_name.length == 0){
+      return notification_message('Please specify the name of the QR file')
     }
   
     try {
       width = parseInt(width);
     } catch (e) {
-      return notify('Width must be a number.');
+      return notification_message('Width must be a number.');
     }
   
     if (width < IMAGE_MIN_WIDTH || !width ) {
-      return notify('Image width Must be between 10 and 1000.');
+      return notification_message('Image width Must be between 10 and 1000.');
     }
   
     if (width > IMAGE_MAX_WIDTH  ) {
-      return notify('Image width must be between 10 and 1000.');
+      return notification_message('Image width must be between 10 and 1000.');
     }
   
     const imageUrl = generateQrCodeUrl(data, width);
@@ -100,15 +108,15 @@ function onGenerateImage(e) {
         console.log(sheets, "QUEMASVE")
         const cell = sheets.getCurrentCell();
         if (!cell) {
-          return notify('Unable to insert image, no cursor.');
+          return notification_message('Unable to insert image, no cursor.');
         }
         image = UrlFetchApp.fetch(imageUrl);
         let blob = UrlFetchApp.fetch(imageUrl).getBlob();
-        folder.createFile(blob)
+        folder.createFile(blob).setName(qr_file_name);
         cell.getSheet().insertImage(image, cell.getColumn(), cell.getRow());
-        return notify('QR code inserted');
+        return notification_message('QR code inserted');
       default:
-        return notify('Host app not supported.');
+        return notification_message('Host app not supported.');
     }
   }
 
@@ -120,7 +128,7 @@ function generateQrCodeUrl(data, width) {
     return url;
 }
 
-function notify(message) {
+function notification_message(message) {
     const notification = CardService.newNotification().setText(message);
     return CardService.newActionResponseBuilder()
         .setNotification(notification)
